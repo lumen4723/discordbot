@@ -1,11 +1,12 @@
-const { Client, Events, GatewayIntentBits } = require("discord.js");
-const { token } = require("./config.json");
+import { Client, Events, GatewayIntentBits } from "discord.js";
+import config from "./config.json" assert { type: "json" };
+const token = config.token;
 
-const {
+import {
     music_test, music_play, music_go,
     music_stop, music_next, music_clear
-} = require("./music_cmd")
-const { chat } = require("./chat_cmd")
+} from "./music_cmd.js";
+import { macro_chat } from "./chat_cmd.js";
 
 const client = new Client({
     intents: [
@@ -30,7 +31,7 @@ client.on("messageCreate", async (message) => {
     else if (message.content === "/next") { music_next(message); }
     else if (message.content === "/clear") { music_clear(message); }
     else {
-        chat(message);
+        macro_chat(message);
         return;
     }
 

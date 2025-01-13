@@ -1,13 +1,16 @@
-const path = require("path");
-const crypto = require("crypto");
-const fs = require("fs");
-const { exec } = require("child_process");
-const {
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+import { createHash } from "crypto";
+import { existsSync, unlinkSync } from "fs";
+import { exec } from "child_process";
+import {
     joinVoiceChannel,
     createAudioPlayer,
     createAudioResource,
     AudioPlayerStatus
-} = require("@discordjs/voice");
+} from "@discordjs/voice";
 
 const queue = [];
 let currentPlayer = null; // 현재 재생 중인 플레이어 상태
@@ -67,9 +70,9 @@ const playNext = async () => {
         connection.destroy();
         if (
             currentPlayer?.audioPath
-            && fs.existsSync(currentPlayer.audioPath)
+            && existsSync(currentPlayer.audioPath)
         ) {
-            fs.unlinkSync(currentPlayer.audioPath); // 파일 삭제
+            unlinkSync(currentPlayer.audioPath); // 파일 삭제
         }
         queue.shift(); // 대기열에서 제거
         currentPlayer = null;
@@ -80,8 +83,8 @@ const playNext = async () => {
     player.on("error", (error) => {
         console.error("오디오 플레이어 에러:", error);
         connection.destroy();
-        if (fs.existsSync(audioPath)) {
-            fs.unlinkSync(audioPath);
+        if (existsSync(audioPath)) {
+            unlinkSync(audioPath);
         }
         queue.shift(); // 대기열에서 제거
         currentPlayer = null;
@@ -101,8 +104,8 @@ const stopProcess = () => {
 
     player.stop(); // 재생 중지
     connection.destroy(); // 음성 채널 연결 종료
-    if (fs.existsSync(audioPath)) {
-        fs.unlinkSync(audioPath); // 다운로드된 파일 삭제
+    if (existsSync(audioPath)) {
+        unlinkSync(audioPath); // 다운로드된 파일 삭제
     }
     currentPlayer = null; // 현재 플레이어 초기화
     return false;
@@ -123,7 +126,7 @@ const music_test = async (message) => {
     });
 
     // 오디오 파일 재생 준비
-    const audioPath = path.join(__dirname, "./mp3/test.mp3");
+    const audioPath = join(__dirname, "./mp3/test.mp3");
     const resource = createAudioResource(audioPath, {
         inputType: StreamType.Arbitrary,
     });
@@ -157,8 +160,8 @@ const music_play = async (message) => {
         return message.reply("먼저 음성 채널에 들어가 주세요!");
     }
 
-    const hash = crypto.createHash("md5").update(url + Math.random()).digest("hex");
-    const audioPath = path.join(__dirname, `./mp3/${hash}.mp3`);
+    const hash = createHash("md5").update(url + Math.random()).digest("hex");
+    const audioPath = join(__dirname, `./mp3/${hash}.mp3`);
 
     queue.push({
         url,
@@ -170,10 +173,12 @@ const music_play = async (message) => {
         error: false,
     });
 
-    message.reply(`음원이 대기열에 추가되었습니다. 현재 대기열: ${queue.length}`);
-    if (queue.length === 1) {
-        message.reply(`처음 실행시에는 시간이 다소 걸릴 수 있습니다`);
-    }
+    message.reply(
+        `음원이 대기열에 추가되었습니다. 현재 대기열: ${queue.length}`
+        + `${
+            queue.length === 1 ? "\n처음 실행시에는 시간이 다소 걸릴 수 있습니다." : ""
+        }`
+    );
 
     downloadNext();
     playNext();
@@ -218,8 +223,8 @@ const music_clear = (message) => {
         if (currentPlayer) { isPlaying = stopProcess(); }
 
         queue.forEach((track) => {
-            if (fs.existsSync(track.audioPath)) {
-                fs.unlinkSync(track.audioPath);
+            if (existsSync(track.audioPath)) {
+                unlinkSync(track.audioPath);
             }
         });
         queue.length = 0;
@@ -231,7 +236,7 @@ const music_clear = (message) => {
     }
 }
 
-module.exports = {
+export {
     music_test, music_play, music_go,
     music_stop, music_next, music_clear
 }

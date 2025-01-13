@@ -1,4 +1,4 @@
-const chat = (message) => {
+const macro_chat = (message) => {
     if (message.content === "알로항") {
         message.reply("알로항");
     }
@@ -16,4 +16,4 @@ const chat = (message) => {
     }
 }
 
-module.exports = { chat }
+export { macro_chat };
