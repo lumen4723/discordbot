@@ -3,26 +3,36 @@ import { tftest1, tftest2, tftest3 } from "./tf_cmd.js";
 import discord from 'discord.js';
 const { EmbedBuilder } = discord;
 
+const dict = [
+    {"key": "알로항", "value": "알로항"},
+    {"key": "민우", "value": "오니쨩"},
+    {"key": "사랑해", "value": "나두 사랑해"},
+    {"key": "AI", "value": "저는 그래픽 카드가 없는 찐따에유 ㅠㅠ"},
+    {"key": "퉁", "value": "퉁퉁퉁퉁퉁퉁퉁퉁퉁 사후르"},
+    {"key": "트", "value": "트랄라레로 트랄랄라"},
+    {"key": "리", "value": "리릴리 라릴라"},
+    {"key": "봄", "value": "봄바르딜로 크로코딜로"},
+];
+
 const macro_chat = (message) => {
-    if (message.content === "알로항") {
-        message.reply("알로항");
+    if (message.content === "!help") {
+        let msg = "도움말: !help, !ㅋ: ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ,";
+        dict.forEach((item) => {
+            msg += `\n${item.key}: ${item.value}`;
+        });
+
+        message.reply(msg);
     }
 
-    if (message.content === "민우") {
-        message.reply("오니쨩");
-    }
-
-    if (message.content === "사랑해") {
-        message.reply("나두 사랑해");
-    }
-
-    if (message.content.startsWith("ㅋ")) {
+    if (message.content.startsWith("!ㅋ")) {
         message.reply("ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ");
     }
 
-    if (message.content === "AI") {
-        message.reply("저는 그래픽 카드가 없는 찐따에유 ㅠㅠ");
-    }
+    dict.forEach((item) => {
+        if (message.content === item.key) {
+            message.reply(item.value);
+        }
+    });
 }
 
 const tf_chat = (message) => {

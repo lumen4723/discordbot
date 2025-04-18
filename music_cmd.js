@@ -9,7 +9,8 @@ import {
     joinVoiceChannel,
     createAudioPlayer,
     createAudioResource,
-    AudioPlayerStatus
+    AudioPlayerStatus,
+    StreamType
 } from "@discordjs/voice";
 
 const queue = [];

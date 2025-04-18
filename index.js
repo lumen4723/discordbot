@@ -1,5 +1,6 @@
 import { Client, Events, GatewayIntentBits } from "discord.js";
-import config from "./config.json" assert { type: "json" };
+import fs from "fs";
+const config = JSON.parse(fs.readFileSync("./config.json", "utf8"));
 const token = config.token;
 
 import {
